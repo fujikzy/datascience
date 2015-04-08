@@ -25,11 +25,11 @@ class Logistic(object):
         frame = pandas.read_csv("text/calbee",sep = ",", header = None, names = names)
         return frame
 
-    def input_predict(self):                                            
+    def input_predict(self, frame):                                            
         names = ["ok", "ra", "age", "education", "employees", "companies", "model"]
         predict = pandas.read_csv("text/predict",sep = ",", header = None, names = names)
         predict = logistic.cleansing(predict)
-        predict = logistic.add_variable(predict)
+        predict = logistic.add_variable2(frame, predict)
         predict.columns= ["index","ok","ra","age","education","employees","companies","model", "age_zscore","education_zscore","companies_zscore","edu1","edu2","edu3","edu4","edu5","edu6"]
         predict["edu7"] = 0.
         return predict
@@ -55,6 +55,26 @@ class Logistic(object):
         frame = pandas.merge(frame, dummy, right_index=True, left_index=True) #index結合
 
         return frame
+
+    def add_variable2(self, frame, predict):
+
+        #frame
+        age_ave = frame.age.mean()
+        age_std = frame.age.std()
+        edu_ave = frame.education.mean()
+        edu_std = frame.education.std()
+        com_ave = frame.companies.mean()
+        com_std = frame.companies.std()
+        #add_zscore
+        predict["age_zscore"] =  ( predict.age - age_ave ) / age_std
+        predict["education_zscore"] =  ( predict.education - edu_ave ) / edu_std
+        predict["companies_zscore"] =  ( predict.companies - com_ave ) / com_std
+
+        #add_education_dummy
+        dummy = pandas.get_dummies(predict.education)
+        predict = pandas.merge(predict, dummy, right_index=True, left_index=True) #index結合
+
+        return predict
 
     def hist_show(self, frame, feature):
 
