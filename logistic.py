@@ -81,9 +81,11 @@ class Logistic(object):
 
         classifier = LogisticRegression()
         classifier.fit(features, cls)
-        print(features.columns)
+        print("coffient:%s" %features.columns)
         print(classifier.coef_)
+        print("intercept")
         print(classifier.intercept_)
+        print("決定係数")
         print(classifier.score(features, cls))
         return classifier
 
