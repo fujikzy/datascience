@@ -97,7 +97,7 @@ class Logistic(object):
         plt.legend()
         plt.show()
 
-    def logistic_fit(self, cls, features):
+    def logistic_fit(self, features, cls):
 
         classifier = LogisticRegression()
         classifier.fit(features, cls)
