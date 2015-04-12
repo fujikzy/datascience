@@ -15,23 +15,19 @@ from sklearn.metrics import roc_curve, auc
 from sklearn.linear_model import LogisticRegression
 
 
-class Logistic(object):
+class Model(object):
 
     def __init__(self):
         pass
 
-    def input_text(self):                                            
+    def input_train(self):                                            
         names = ["ok", "ra", "age", "education", "employees", "companies"]
         frame = pandas.read_csv("text/calbee",sep = ",", header = None, names = names)
         return frame
 
-    def input_predict(self, frame):                                            
+    def input_test(self, frame):                                            
         names = ["ok", "ra", "age", "education", "employees", "companies", "model"]
         predict = pandas.read_csv("text/predict",sep = ",", header = None, names = names)
-        predict = logistic.cleansing(predict)
-        predict = logistic.add_variable2(frame, predict)
-        predict.columns= ["index","ok","ra","age","education","employees","companies","model", "age_zscore","education_zscore","companies_zscore","edu1","edu2","edu3","edu4","edu5","edu6"]
-        predict["edu7"] = 0.
         return predict
 
     def cleansing(self, frame):
@@ -97,52 +93,6 @@ class Logistic(object):
         plt.legend()
         plt.show()
 
-    def logistic_fit(self, features, cls):
-
-        classifier = LogisticRegression()
-        classifier.fit(features, cls)
-        print("coffient:%s" %features.columns)
-        print(classifier.coef_)
-        print("intercept")
-        print(classifier.intercept_)
-        print("決定係数")
-        print(classifier.score(features, cls))
-        return classifier
-
-    def logistic_predict(self, classifier, features):
-                                            
-        probas_ = classifier.predict_proba(features)
-        list_ = classifier.predict(features)
-        return [probas_, list_]
-        # 1. / (1. + np.exp(-prob))
-
-        #roc_show
-        """
-        roc_auc = auc(fpr, tpr)
-        plt.clf()
-        plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
-        plt.plot([0, 1], [0, 1], 'k--')
-        plt.xlim([0.0, 1.0])
-        plt.ylim([0.0, 1.0])
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title('Receiver operating characteristic example')
-        plt.legend(loc="lower right")
-        plt.show()
-        """
-
-    def gain_show(self):
-
-        rocframe = pandas.read_csv("text/roc",sep="\t", header=None, names=["age"])
-        print(rocframe)
-        plt.figure()
-        plt.plot(rocframe)
-        plt.show()
-
-logistic = Logistic()
-frame = logistic.input_text()
-frame = logistic.cleansing(frame)
-frame = logistic.add_variable(frame)
 
 '''確率　
 end = float("-inf")
@@ -155,4 +105,26 @@ f = open("./text/roc")
 text = f.read()
 roclist = text[:-1].split('\n')
 roclist = list(map(int, roclist))
+'''
+
+'''statsmodel　
+import statsmodels.api as sm
+train_cols=["age_zscore","education_zscore","companies_zscore"]
+logit = sm.Logit(frame['ok'], frame[train_cols])
+result_n = logit.fit()
+result_n.summary()
+'''
+
+'''
+roc_auc = auc(fpr, tpr)
+plt.clf()
+plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.0])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver operating characteristic example')
+plt.legend(loc="lower right")
+plt.show()
 '''
