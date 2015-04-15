@@ -21,8 +21,8 @@ class Model(object):
         pass
 
     def input_train(self):                                            
-        names = ["ok", "ra", "age", "education", "employees", "companies"]
-        frame = pandas.read_csv("text/calbee",sep = ",", header = None, names = names)
+        names = ["ok", "ra", "age", "education", "jobhop", "income", "employees", "joblength", "jobtype", "businesstype"]
+        frame = pandas.read_csv("text/train",sep = "\t", header = None, names = names)
         return frame
 
     def input_test(self, frame):                                            
